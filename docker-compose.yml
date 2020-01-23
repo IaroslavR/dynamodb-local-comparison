@@ -1,0 +1,15 @@
+---
+version: "3.7"
+services:
+  moto:
+    image: ${MOTO_NAME}:${MOTO_TAG}
+    build:
+      context: ./moto
+      args:
+        MOTO_VERSION: ${MOTO_TAG}
+  dynalite:
+    image: ${DYNALITE_NAME}:${DYNALITE_TAG}
+    build:
+      context: ./dynalite
+      args:
+        DYNALITE_VERSION: ${DYNALITE_TAG}

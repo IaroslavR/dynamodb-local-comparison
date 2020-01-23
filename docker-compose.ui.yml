@@ -1,0 +1,38 @@
+---
+version: "3.7"
+
+services:
+  dynamodb-admin:
+    image: aaronshaf/dynamodb-admin:latest
+    networks:
+      - public
+#    ports:
+#      - target: 8001
+#        published: ${DYNAMODB_ADMIN_PORT:-9999}
+#        mode: host
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.dynamodb-admin.rule: Host(`dynamodb.th.is`)
+      traefik.http.routers.dynamodb-admin.tls: "true"
+      traefik.http.routers.dynamodb-admin.entrypoints: https
+      traefik.http.routers.dynamodb-admin.service: dynamodb-admin
+      traefik.http.services.dynamodb-admin.loadbalancer.server.port: 8001
+      traefik.http.routers.dynamodb-admin-http.rule: hostregexp(`{host:.+}`)
+      traefik.http.routers.dynamodb-admin-http.entrypoints: http
+      traefik.http.routers.dynamodb-admin-http.middlewares: redirect-to-https
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 20s
+      replicas: 1
+    environment:
+      DYNAMO_ENDPOINT: ${DYNAMO_ENDPOINT_PORT:-http://dynamodb:8000}
+#      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local
+
+networks:
+  public:
+    external: true

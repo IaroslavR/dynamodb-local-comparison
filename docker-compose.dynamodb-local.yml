@@ -1,0 +1,28 @@
+---
+version: "3.7"
+
+services:
+  dynamodb:
+    image: amazon/dynamodb-local:1.11.477
+    networks:
+      - public
+    ports:
+      - target: 8000
+        published: ${DYNAMODB_PORT:-8000}
+        mode: host
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 20s
+      replicas: 1
+      resources:
+        limits:
+          cpus: '3'
+          memory: 2048M
+    command: -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:ActiveProcessorCount=3 -XX:MaxRAMPercentage=90.0 -jar DynamoDBLocal.jar -inMemory
+
+networks:
+  public:
+    external: true
