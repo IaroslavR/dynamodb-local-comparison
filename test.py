@@ -18,22 +18,18 @@ os.environ["AWS_SECRET_ACCESS_KEY"] = "local"
 
 HOST = "localhost"
 PORT = "8000"
-AWS_REGION = "us-east-1"
-AWS_ACCESS_KEY_ID = "local"
-AWS_SECRET_ACCESS_KEY = "local"
+
 
 r = boto3.resource(
     "dynamodb",
-    region_name=AWS_REGION,
-    # aws_access_key_id=AWS_ACCESS_KEY_ID,
-    # aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+    region_name=os.getenv("AWS_REGION"),
     endpoint_url=f"http://{HOST}:{PORT}",
 )
 
 try:
     table = r.create_table(
         AttributeDefinitions=[{"AttributeName": "string", "AttributeType": "S"}],
-        TableName="tableboto3",
+        TableName="tableboto33",
         KeySchema=[{"AttributeName": "string", "KeyType": "HASH"}],
         ProvisionedThroughput={"ReadCapacityUnits": 1, "WriteCapacityUnits": 1},
     )
@@ -42,22 +38,20 @@ except Exception as e:
 print(list(r.tables.all()))
 
 c = connect_to_region(
-    AWS_REGION,
+    os.getenv("AWS_REGION"),
     host=HOST,
     port=PORT,
-    aws_access_key_id=AWS_ACCESS_KEY_ID,
-    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-    is_secure=False
+    is_secure=False,
 )
 
 
 try:
-    table2 = Table.create('tableboto22', schema=[
-        HashKey('string'),
-    ], throughput={
-        'read': 1,
-        'write': 1,
-    }, connection=c)
+    table2 = Table.create(
+        "tableboto222",
+        schema=[HashKey("string")],
+        throughput={"read": 1, "write": 1},
+        connection=c,
+    )
 except Exception as e:
     print(e)
 print(c.list_tables())
@@ -65,10 +59,7 @@ print(c.list_tables())
 c2 = DynamoDBConnection(
     host=HOST,
     port=PORT,
-    aws_access_key_id=AWS_ACCESS_KEY_ID,
-    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
     is_secure=False,
-    debug=True
 )
 
 print(c2.list_tables())

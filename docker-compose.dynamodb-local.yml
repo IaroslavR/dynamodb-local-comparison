@@ -21,7 +21,12 @@ services:
         limits:
           cpus: '3'
           memory: 2048M
-    command: -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:ActiveProcessorCount=3 -XX:MaxRAMPercentage=90.0 -jar DynamoDBLocal.jar -inMemory
+    command: >
+      -XX:+UnlockExperimentalVMOptions
+      -XX:+UseCGroupMemoryLimitForHeap
+      -XX:ActiveProcessorCount=3
+      -XX:MaxRAMPercentage=90.0
+      -jar DynamoDBLocal.jar -inMemory -sharedDb
 
 networks:
   public:
